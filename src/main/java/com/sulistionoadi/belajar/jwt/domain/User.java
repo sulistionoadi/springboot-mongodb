@@ -2,6 +2,7 @@ package com.sulistionoadi.belajar.jwt.domain;
 
 import java.io.Serializable;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -19,6 +20,9 @@ public class User implements Serializable {
     
     private String password;
     
+    @DBRef
+    private Role role;
+    
     public String getId() {
         return id;
     }
@@ -26,7 +30,7 @@ public class User implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
-
+    
     public String getUsername() {
         return username;
     }
@@ -43,8 +47,16 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", username=" + username + ", password=" + password + '}';
+        return "User{" + "id=" + id + ", username=" + username + ", password=" + password + ", role=" + role.getName() + '}';
     }
 }
