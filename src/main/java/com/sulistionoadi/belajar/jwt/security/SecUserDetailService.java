@@ -10,6 +10,8 @@ import com.sulistionoadi.belajar.jwt.domain.Permission;
 import com.sulistionoadi.belajar.jwt.domain.User;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,11 +28,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class SecUserDetailService implements UserDetailsService {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(SecUserDetailService.class);
+    
     @Autowired
     private UserDao userDao;
     
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        LOGGER.info("Login with username [{}]", username);
         User user = userDao.findByUsername(username);
         if(user == null){
             throw new UsernameNotFoundException(username);

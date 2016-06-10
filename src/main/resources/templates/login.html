@@ -21,21 +21,52 @@
     <body>
         <div class="container">
             <div th:if="${param.error} and ${session.SPRING_SECURITY_LAST_EXCEPTION} != null" class="alert alert-danger">
-                <span th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}"></span>
+                <span th:text="${session.SPRING_SECURITY_LAST_EXCEPTION}"></span>
             </div>
             <div th:if="${param.logout}" class="alert alert-success">
                 You have been logged out.
             </div>
 
-            <form class="form-signin" method="post" th:action="@{/login}">
+            <form class="form-signin">
                 <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
                 <h4 class="form-signin-heading" style="text-align:center;">Please sign in</h4>
                 <label for="inputUsername" class="sr-only">Username</label>
                 <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username"/>
                 <label for="inputPassword" class="sr-only">Password</label>
                 <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password"/>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                <button class="btn btn-lg btn-primary btn-block" type="button" id="btn-login">Sign in</button>
             </form>
         </div>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"/>
+        <script type="text/javascript">
+            $('.form-signin').on('keyup', function(e){
+                e.preventDefault();
+                if(e.which == 13 || e.keyCode == 13){
+                    processLogin();
+                }        
+            });
+            
+            $('#btn-login').click(function(){
+                processLogin();
+            });
+            
+            function processLogin(){
+                $.ajax({
+                  url: window.location.href,
+                  method: 'POST',
+                  type: 'text/html',
+                  contentType: 'application/x-www-form-urlencoded',
+                  data : $('.form-signin').serialize(),
+                  success: function(data, textStatus, request){
+                      localStorage.setItem('token', request.getResponseHeader('Authorization'));
+//                      window.location.href = 'http://localhost:8081/api/user';
+                  }, 
+                  error: function(xhr, ajaxOptions, thrownError) {
+                      window.location.href = 'login?error';
+                  }
+                });
+            }
+        </script>
     </body>
 </html>

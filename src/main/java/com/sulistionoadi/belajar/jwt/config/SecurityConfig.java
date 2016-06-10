@@ -1,5 +1,8 @@
 package com.sulistionoadi.belajar.jwt.config;
 
+import com.sulistionoadi.belajar.jwt.handler.LoginFailureHandler;
+import com.sulistionoadi.belajar.jwt.handler.LoginSuccessHandler;
+import com.sulistionoadi.belajar.jwt.security.JwtAuthenticationTokenFilter;
 import com.sulistionoadi.belajar.jwt.security.SecUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,18 +26,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired private SecUserDetailService userDetailService;
 //    @Autowired private SecurityLogoutHandler logoutHandler;
-//    @Autowired private LoginFailureHandler loginFailureHandler;
-//    @Autowired private LoginSuccessHandler loginSuccessHandler;
+    @Autowired private LoginFailureHandler loginFailureHandler;
+    @Autowired private LoginSuccessHandler loginSuccessHandler;
 
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailService);
     }
-
-    @Bean 
+    
+    @Bean
     public SessionRegistry sessionRegistry(){
         return new SessionRegistryImpl();
+    }
+    
+    @Bean
+    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
+        JwtAuthenticationTokenFilter authenticationTokenFilter = new JwtAuthenticationTokenFilter();
+        authenticationTokenFilter.setAuthenticationManager(authenticationManagerBean());
+        return authenticationTokenFilter;
     }
 
     @Override
@@ -42,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .sessionManagement()
                 .maximumSessions(1)
-                .maxSessionsPreventsLogin(false)
+                .maxSessionsPreventsLogin(true)
                 .sessionRegistry(sessionRegistry());
 
         http
@@ -62,8 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
             .and()
                 .formLogin().loginPage("/login").permitAll()
-//                .failureHandler(loginFailureHandler)
-//                .successHandler(loginSuccessHandler)
+                .failureHandler(loginFailureHandler)
+                .successHandler(loginSuccessHandler)
             .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
@@ -73,6 +83,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable();
 //                .csrf().csrfTokenRepository(csrfTokenRepository())
 //                .and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
+        
+        // Custom JWT based security filter
+//        http
+//            .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+
+        // disable page caching
+//        http.headers().cacheControl();
     }
     
 //    private CsrfTokenRepository csrfTokenRepository() {
