@@ -7,16 +7,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
-
-        <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
-              integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous" />
-        
-        <!-- Own Custom CSS -->
-        <link rel="stylesheet" th:href="@{/styles/main.css}" />
+        <link rel="stylesheet" href="styles/vendor.2ac5f564.css"/>
+        <link rel="stylesheet" href="styles/main.1f9c5951.css"/>
     </head>
     <body>
         <div class="container">
@@ -38,7 +30,7 @@
             </form>
         </div>
         
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"/>
+        <script src="scripts/vendor.b610492f.js"></script>
         <script type="text/javascript">
             $('.form-signin').on('keyup', function(e){
                 e.preventDefault();
@@ -60,7 +52,7 @@
                   data : $('.form-signin').serialize(),
                   success: function(data, textStatus, request){
                       localStorage.setItem('token', request.getResponseHeader('Authorization'));
-//                      window.location.href = 'http://localhost:8081/api/user';
+                      window.location.replace(request.getResponseHeader('Location'));
                   }, 
                   error: function(xhr, ajaxOptions, thrownError) {
                       window.location.href = 'login?error';

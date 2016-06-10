@@ -60,6 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/logout").permitAll()
                 .antMatchers("/styles/**").permitAll()
                 .antMatchers("/images/**").permitAll()
+                .antMatchers("/fonts/**").permitAll()
+                .antMatchers("/scripts/**").permitAll()
                 .antMatchers("/favicon.ico").permitAll()
                 .antMatchers("/api/halo").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/user/**").hasRole("USER_VIEW")

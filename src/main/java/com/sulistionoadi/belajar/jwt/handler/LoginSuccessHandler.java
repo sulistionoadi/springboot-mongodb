@@ -15,12 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.WebUtils;
 
 /**
  *
@@ -57,6 +59,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler{
         final String token = jwtTokenUtil.generateToken(userDetails);
  
         response.setHeader(tokenHeader, token);
+        response.setHeader(HttpHeaders.LOCATION, request.getServletContext().getContextPath() + "/#/");
     }
     
     protected void clearAuthenticationAttributes(HttpServletRequest request) {
