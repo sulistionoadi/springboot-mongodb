@@ -25,7 +25,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired private SecUserDetailService userDetailService;
-//    @Autowired private SecurityLogoutHandler logoutHandler;
     @Autowired private LoginFailureHandler loginFailureHandler;
     @Autowired private LoginSuccessHandler loginSuccessHandler;
 
@@ -50,10 +49,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .sessionManagement()
-                .maximumSessions(1)
-                .maxSessionsPreventsLogin(true)
-                .sessionRegistry(sessionRegistry());
+            .sessionManagement()
+            .maximumSessions(1)
+            .maxSessionsPreventsLogin(true)
+            .sessionRegistry(sessionRegistry());
 
         http
             .authorizeRequests()
@@ -78,7 +77,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .invalidateHttpSession(true)
-//                .logoutSuccessHandler(logoutHandler)
             .and()
                 .csrf().disable();
 //                .csrf().csrfTokenRepository(csrfTokenRepository())

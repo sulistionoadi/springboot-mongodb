@@ -35,12 +35,12 @@ public class SecUserDetailService implements UserDetailsService {
     
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        LOGGER.info("Login with username [{}]", username);
+        LOGGER.debug("Login with username [{}]", username);
         User user = userDao.findByUsername(username);
         if(user == null){
             throw new UsernameNotFoundException(username);
         } else{
-            UserDetails details = new SecManUserDetails(user.getId(), user.getUsername(), user.getPassword(), 
+            SecManUserDetails details = new SecManUserDetails(user.getId(), user.getUsername(), user.getPassword(), 
                     mapToGrantedAuthorities(new ArrayList<>(user.getRole().getPermissions())), true);
             return details;
         }

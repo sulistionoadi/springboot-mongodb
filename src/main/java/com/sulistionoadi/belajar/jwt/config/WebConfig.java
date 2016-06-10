@@ -6,8 +6,8 @@
 package com.sulistionoadi.belajar.jwt.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  * @author adi
  */
 
-@Component
+@Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
     
     @Override
