@@ -7,10 +7,11 @@ package com.sulistionoadi.belajar.jwt.rest;
 
 import com.sulistionoadi.belajar.jwt.dao.UserDao;
 import com.sulistionoadi.belajar.jwt.domain.User;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +33,9 @@ public class UserController {
     private UserDao userDao;
     
     @RequestMapping(method = RequestMethod.GET)
-    public List<User> getAllUser(){
+    public Page<User> getAllUser(Pageable pageable){
         LOGGER.info("--=== {} ===--", "Find All User");
-        return userDao.findAll();
+        return userDao.findAll(pageable);
     }
     
     @RequestMapping(value="/{key}/{value}", method = RequestMethod.GET)

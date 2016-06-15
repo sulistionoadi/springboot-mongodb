@@ -7,10 +7,11 @@ package com.sulistionoadi.belajar.jwt.rest;
 
 import com.sulistionoadi.belajar.jwt.dao.RoleDao;
 import com.sulistionoadi.belajar.jwt.domain.Role;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,10 +32,16 @@ public class RoleController {
     @Autowired
     private RoleDao roleDao;
     
+    @RequestMapping(value="/count", method = RequestMethod.GET)
+    public Long countRole(){
+        LOGGER.info("--=== {} ===--", "Count Role");
+        return roleDao.count();
+    }
+    
     @RequestMapping(method = RequestMethod.GET)
-    public List<Role> getAllRole(){
+    public Page<Role> getAllRole(Pageable pageable){
         LOGGER.info("--=== {} ===--", "Find All Role");
-        return roleDao.findAll();
+        return roleDao.findAll(pageable);
     }
     
     @RequestMapping(value="/{key}/{value}", method = RequestMethod.GET)

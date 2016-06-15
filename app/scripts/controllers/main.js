@@ -8,10 +8,13 @@
  * Controller of the belajarSecuringJwtApp
  */
 angular.module('belajarSecuringJwtApp')
-  .controller('MainCtrl', function () {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-  });
+  .controller('MainCtrl', function ($scope, $window) {
+
+  		$scope.init = function(){
+  			var token = $window.localStorage.getItem('token');
+  			$scope.username=token;
+  		};
+
+  		$scope.init();
+
+});

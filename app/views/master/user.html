@@ -1,0 +1,92 @@
+<div class="row">
+    <div class="col-xs-5">
+        <form name="formUser">
+            <div class="panel panel-default" style="margin:5px">
+                <div class="panel-heading">
+                    User
+                </div>
+                <div class="panel-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <label for="username" class="control-label">Username</label>
+                            </div>
+                            <div class="col-sm-8" ng-class="{error: formUser.username.$invalid}">
+                                <input name="username" type="text" class="form-control" id="username" ng-model="currentUser.username" required/>
+                                <span style="float:right; color:white" class="help-block label label-danger" ng-show="formUser.username.$error.required">
+                                    Username is Required
+                                </span>
+                                <span style="float:right; color:white" class="help-block label label-danger" ng-show="usernameExist">
+                                    Username already exist
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4" ng-class="{error: formUser.password.$invalid}">
+                                <label for="password" class="control-label">Password</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <input name="password" type="password" class="form-control" id="password" ng-model="currentUser.password"/>
+                                <span style="float:right; color:white" class="help-block label label-danger" ng-show="passwordRequired">
+                                    Password is Required
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <label class="control-label" for="role">Role</label>
+                            </div>
+                            <div class="col-sm-8">
+                                <select ui-select2 name="role" ng-model="currentUser.role.id" id="cmbRole" data-placeholder="-- Select One --" required>
+                                    <option></option>
+                                    <option ng-repeat="role in roles" value="{{role.id}}">{{role.name}}</option>
+                                </select>
+                                <span style="float:right; color:white" class="help-block label label-danger" ng-show="formUser.role.$error.required">
+                                    This Field is Required
+                                </span>
+                            </div>
+                        </div>
+                        <div align="right">
+                            <button class="btn btn-primary" ng-click="save()" ng-disabled="isClean() || formUser.$invalid">Save</button>
+                            <button class="btn btn-default" ng-click="clear()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-xs-7">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        Username
+                    </th>
+                    <th>
+                        Role
+                    </th>
+                    <th class="col-xs-1">
+                        <button type="button" class="btn-right btn btn-default btn-sm btn-block" ng-click="clear()">
+                            <span class="glyphicon glyphicon-plus-sign"></span>
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in users">
+                    <td>{{x.username}}</td>
+                    <td>{{x.role.name}}</td>
+                    <td class="col-xs-1">
+                        <a class="glyphicon glyphicon-edit" ng-click="edit(x)"></a>
+                        <a class="glyphicon glyphicon-remove" ng-click="delete(x)"></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div align="center">
+            <pagination total-items="paging.totalItems" ng-model="paging.currentPage" items-per-page="paging.maxSize" max-size="10" class="pagination-sm" boundary-links="true" ng-change="reloadData()" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+            
+            <pre>Page: {{paging.currentPage}} / {{paging.maxPage}}</pre>
+        </div>
+    </div>
+</div>
