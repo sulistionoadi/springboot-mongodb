@@ -46,16 +46,21 @@ angular
       service.request = function (config) {
         if(config.method === 'POST' || config.method === 'PUT') {
           console.log(config);
-          var oHeader = {'alg': 'HS256', 'typ': 'JWT'};
+          var oHeader = {'alg': 'HS512', 'typ':'JWT'};
           var oPayload = {};
 
           if(config.data) oPayload=config.data;
 
           var sHeader = JSON.stringify(oHeader);
           var sPayload = JSON.stringify(oPayload);
-          var sJWT = KJUR.jws.JWS.sign("HS256", sHeader, sPayload, "bismillah");
+          var sJWT = KJUR.jws.JWS.sign("HS512", sHeader, sPayload, "bismillah");
 
-          if(config.data) config.data={'payload':sJWT};
+          var isValid = KJUR.jws.JWS.verifyJWT(sJWT, "bismillah", {alg: ['HS512']});
+
+          console.log("Is it valid ?", isValid);
+
+          //if(config.data) config.data={'payload':sJWT};
+          if(config.data) config.data=sJWT;
         }
         
         return config;

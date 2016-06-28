@@ -5,6 +5,8 @@
  */
 package com.sulistionoadi.belajar.jwt.config;
 
+import com.sulistionoadi.belajar.jwt.filter.RestFilter;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -27,6 +29,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public HttpSessionEventPublisher registerHttpSessionEventPublisher(){
         return new HttpSessionEventPublisher();
+    }
+    
+    @Bean
+    public FilterRegistrationBean corsFilter() {
+        FilterRegistrationBean bean = new FilterRegistrationBean(new RestFilter());
+        bean.setOrder(0);
+        return bean;
     }
     
 }
