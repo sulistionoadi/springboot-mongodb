@@ -41,11 +41,16 @@ angular
       });
   })
   .service('APIInterceptor', function ($q, $location, $window) {
-      var service = this;
+        var service = this;
+        service.request = function (config) {
+        console.log(config);
+        var token = localStorage.getItem('token');
+        if (token) {
+            config.headers = config.headers || {};
+            config.headers.Authorization = 'Bearer ' + token;
+        }
 
-      service.request = function (config) {
         if(config.method === 'POST' || config.method === 'PUT') {
-          console.log(config);
           var oHeader = {'alg': 'HS512', 'typ':'JWT'};
           var oPayload = {};
 
@@ -62,9 +67,14 @@ angular
           //if(config.data) config.data={'payload':sJWT};
           if(config.data) config.data=sJWT;
         }
-        
+
         return config;
-      };
+        };
+        service.responseError = function (response) {
+            if(response.status === 401) {
+                 window.location = "/login";
+            }  
+        };
   })
   .config(function ($httpProvider) {
       $httpProvider.interceptors.push('APIInterceptor');

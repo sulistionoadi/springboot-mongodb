@@ -14,9 +14,20 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.util.StringUtils;
 
-public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtAuthenticationTokenFilter 
+        extends UsernamePasswordAuthenticationFilter {
+    
+    private final Logger logger = 
+            LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+    
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
@@ -24,20 +35,39 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
     private String tokenHeader;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-
+    public void doFilter(
+            ServletRequest request, 
+            ServletResponse response, 
+            FilterChain chain) 
+            throws IOException, ServletException {
+        
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String authToken = httpRequest.getHeader(this.tokenHeader);
-        // authToken.startsWith("Bearer ")
-        // String authToken = header.substring(7);
-        String username = jwtTokenUtil.getUsernameFromToken(authToken);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        if(StringUtils.hasText(authToken) 
+                && authToken.startsWith("Bearer ")) 
+            authToken = authToken.substring(7);
+        String username = jwtTokenUtil.getUsernameFromToken(authToken);
+        logger.info("Username login is {}", username);
+
+        if (username != null 
+                && SecurityContextHolder.getContext()
+                        .getAuthentication() == null) {
+            
+            logger.info("Security Context authentication is null");
+            UserDetails userDetails = 
+                    this.userDetailsService.loadUserByUsername(username);
             if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                UsernamePasswordAuthenticationToken authentication = 
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails, 
+                                null, 
+                                userDetails.getAuthorities());
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource()
+                                .buildDetails(httpRequest));
+                SecurityContextHolder.getContext()
+                        .setAuthentication(authentication);
             }
         }
 

@@ -22,7 +22,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.WebUtils;
 
 /**
  *
@@ -43,31 +42,42 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler{
     private String tokenHeader;
     
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, 
-            HttpServletResponse response, Authentication a) throws IOException, ServletException {
+    public void onAuthenticationSuccess(
+            HttpServletRequest request, 
+            HttpServletResponse response, Authentication a) 
+            throws IOException, ServletException {
         handle(request, response, a);
         clearAuthenticationAttributes(request);
     }
     
-    protected void handle(HttpServletRequest request, 
-            HttpServletResponse response, Authentication authentication) throws IOException {
+    protected void handle(
+            HttpServletRequest request, 
+            HttpServletResponse response, 
+            Authentication authentication) throws IOException {
         
         String username = authentication.getName();
-        logger.debug("Handler Login Success for username [{}]", username);
+        logger.debug("Handler Login Success for username [{}]", 
+                username);
         
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        final String token = jwtTokenUtil.generateToken(userDetails);
+        final UserDetails userDetails = 
+                userDetailsService.loadUserByUsername(username);
+        final String token = jwtTokenUtil
+                .generateToken(userDetails);
  
         response.setHeader(tokenHeader, token);
-        response.setHeader(HttpHeaders.LOCATION, request.getServletContext().getContextPath() + "/#/");
+        response.setHeader(HttpHeaders.LOCATION, 
+                request.getServletContext()
+                        .getContextPath() + "/#/");
     }
     
-    protected void clearAuthenticationAttributes(HttpServletRequest request) {
+    protected void clearAuthenticationAttributes(
+            HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) {
             return;
         }
-        session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+        session.removeAttribute(
+                WebAttributes.AUTHENTICATION_EXCEPTION);
     }
     
 }

@@ -29,34 +29,34 @@
                 <button class="btn btn-lg btn-primary btn-block" type="button" id="btn-login">Sign in</button>
             </form>
         </div>
-        
-        <script src="scripts/vendor.a0c1af36.js"></script>
+
+        <script src="scripts/vendor.23d8b386.js"></script>
         <script type="text/javascript">
-            $('.form-signin').on('keyup', function(e){
+            $('.form-signin').on('keyup', function (e) {
                 e.preventDefault();
-                if(e.which == 13 || e.keyCode == 13){
+                if (e.which == 13 || e.keyCode == 13) {
                     processLogin();
-                }        
+                }
             });
-            
-            $('#btn-login').click(function(){
+
+            $('#btn-login').click(function () {
                 processLogin();
             });
-            
-            function processLogin(){
+
+            function processLogin() {
                 $.ajax({
-                  url: window.location.href,
-                  method: 'POST',
-                  type: 'text/html',
-                  contentType: 'application/x-www-form-urlencoded',
-                  data : $('.form-signin').serialize(),
-                  success: function(data, textStatus, request){
-                      localStorage.setItem('token', request.getResponseHeader('Authorization'));
-                      window.location.replace(request.getResponseHeader('Location'));
-                  }, 
-                  error: function(xhr, ajaxOptions, thrownError) {
-                      window.location.href = 'login?error';
-                  }
+                    url: window.location.href,
+                    method: 'POST',
+                    type: 'text/html',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: $('.form-signin').serialize(),
+                    success: function (data, textStatus, request) {
+                        localStorage.setItem('token', request.getResponseHeader('Authorization'));
+                        window.location.replace(request.getResponseHeader('Location'));
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        window.location.href = 'login?error';
+                    }
                 });
             }
         </script>

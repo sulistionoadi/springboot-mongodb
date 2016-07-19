@@ -9,7 +9,6 @@ import com.sulistionoadi.belajar.jwt.filter.RestFilter;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -26,13 +25,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addViewController("/login").setViewName("login");
     }
     
-    @Bean
-    public HttpSessionEventPublisher registerHttpSessionEventPublisher(){
-        return new HttpSessionEventPublisher();
-    }
+//    @Bean
+//    public HttpSessionEventPublisher registerHttpSessionEventPublisher(){
+//        return new HttpSessionEventPublisher();
+//    }
     
     @Bean
-    public FilterRegistrationBean corsFilter() {
+    public FilterRegistrationBean httpRequestFilter() {
         FilterRegistrationBean bean = new FilterRegistrationBean(new RestFilter());
         bean.setOrder(0);
         return bean;

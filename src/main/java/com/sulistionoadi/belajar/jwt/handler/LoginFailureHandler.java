@@ -21,15 +21,22 @@ import org.springframework.stereotype.Component;
 public class LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest req, HttpServletResponse res, AuthenticationException ae) 
+    public void onAuthenticationFailure(
+            HttpServletRequest req, 
+            HttpServletResponse res, 
+            AuthenticationException ae) 
             throws IOException, ServletException {
         res.setStatus(HttpStatus.UNAUTHORIZED.value());
-        
+
         HttpSession session = req.getSession();
-        session.setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, ae.getMessage());
+        session.setAttribute(
+                WebAttributes.AUTHENTICATION_EXCEPTION, 
+                ae.getMessage());
         
         try (PrintWriter writer = res.getWriter()) {
-            writer.write("{\"code\":\""+res.getStatus()+"\", \"status\":\"ERR\", \"message\":\""+ae.getMessage()+"\"}");
+            writer.write("{\"code\":\""+res.getStatus()
+                    + "\", \"status\":\"ERR\", "
+                    + "\"message\":\""+ae.getMessage()+"\"}");
             writer.flush();
             writer.close();
         }

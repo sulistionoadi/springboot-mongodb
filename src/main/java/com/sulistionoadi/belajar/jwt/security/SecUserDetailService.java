@@ -24,34 +24,39 @@ import org.springframework.stereotype.Component;
  *
  * @author adi
  */
-
 @Component
 public class SecUserDetailService implements UserDetailsService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(SecUserDetailService.class);
-    
+
     @Autowired
     private UserDao userDao;
-    
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
         LOGGER.debug("Login with username [{}]", username);
         User user = userDao.findByUsername(username);
-        if(user == null){
+        if (user == null) {
             throw new UsernameNotFoundException(username);
-        } else{
-            SecManUserDetails details = new SecManUserDetails(user.getId(), user.getUsername(), user.getPassword(), 
-                    mapToGrantedAuthorities(new ArrayList<>(user.getRole().getPermissions())), true);
+        } else {
+            SecManUserDetails details = new SecManUserDetails(
+                    user.getId(), user.getUsername(),
+                    user.getPassword(),
+                    mapToGrantedAuthorities(new ArrayList<>(
+                            user.getRole().getPermissions())), true);
             return details;
         }
     }
-    
-    private List<GrantedAuthority> mapToGrantedAuthorities(List<Permission> permissions) {
+
+    private List<GrantedAuthority> mapToGrantedAuthorities(
+            List<Permission> permissions) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for(Permission p : permissions){
-            authorities.add(new SimpleGrantedAuthority(p.getValue()));
+        for (Permission p : permissions) {
+            authorities.add(new SimpleGrantedAuthority(
+                    p.getValue()));
         }
         return authorities;
     }
-    
+
 }

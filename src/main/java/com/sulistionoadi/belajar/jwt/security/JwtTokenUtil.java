@@ -60,17 +60,17 @@ public class JwtTokenUtil implements Serializable {
         return expiration;
     }
 
-    public String getAudienceFromToken(String token) {
-        String audience;
-        try {
-            final Claims claims = getClaimsFromToken(token);
-            audience = (String) claims.get(CLAIM_KEY_AUDIENCE);
-        } catch (Exception e) {
-            audience = null;
-        }
-        return audience;
-    }
-
+////    public String getAudienceFromToken(String token) {
+////        String audience;
+////        try {
+////            final Claims claims = getClaimsFromToken(token);
+////            audience = (String) claims.get(CLAIM_KEY_AUDIENCE);
+////        } catch (Exception e) {
+////            audience = null;
+////        }
+////        return audience;
+////    }
+//
     private Claims getClaimsFromToken(String token) {
         Claims claims;
         try {
