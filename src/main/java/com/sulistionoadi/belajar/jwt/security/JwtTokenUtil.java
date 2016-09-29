@@ -11,6 +11,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Component
 public class JwtTokenUtil implements Serializable {
@@ -20,22 +23,42 @@ public class JwtTokenUtil implements Serializable {
     private static final String CLAIM_KEY_USERNAME = "sub";
     private static final String CLAIM_KEY_AUDIENCE = "audience";
     private static final String CLAIM_KEY_CREATED = "created";
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @Value("${jwt.secret}")
     private String secret;
 
     @Value("${jwt.expiration}")
     private Long expiration;
+    
+    @Autowired
+    private EncryptionUtil encryptionUtil;
 
     public String getUsernameFromToken(String token) {
         String username;
         try {
             final Claims claims = getClaimsFromToken(token);
+            if(claims==null) return null;
             username = claims.getSubject();
         } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
             username = null;
         }
         return username;
+    }
+    
+    public String getPasswordFromToken(String token) {
+        String password;
+        try {
+            final Claims claims = getClaimsFromToken(token);
+            if(claims==null) return null;
+            String encryptedSecret = claims.get("secret").toString();
+            password = encryptionUtil.decrypt(encryptedSecret);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            password = null;
+        }
+        return password;
     }
 
     public Date getCreatedDateFromToken(String token) {
@@ -97,11 +120,12 @@ public class JwtTokenUtil implements Serializable {
         return (lastPasswordReset != null && created.before(lastPasswordReset));
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails) throws Exception {
         Map<String, Object> claims = new HashMap<>();
         claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
         claims.put(CLAIM_KEY_AUDIENCE, "web");
         claims.put(CLAIM_KEY_CREATED, new Date());
+        claims.put("secret", encryptionUtil.encrypt(userDetails.getPassword()));
         return generateToken(claims);
     }
 

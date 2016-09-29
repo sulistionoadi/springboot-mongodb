@@ -50,6 +50,9 @@ public class JwtAuthenticationTokenFilter
         String username = jwtTokenUtil.getUsernameFromToken(authToken);
         logger.info("Username login is {}", username);
 
+        String password = jwtTokenUtil.getPasswordFromToken(authToken);
+        logger.info("Password login is {}", password);
+        
         if (username != null 
                 && SecurityContextHolder.getContext()
                         .getAuthentication() == null) {
@@ -57,7 +60,11 @@ public class JwtAuthenticationTokenFilter
             logger.info("Security Context authentication is null");
             UserDetails userDetails = 
                     this.userDetailsService.loadUserByUsername(username);
-            if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+            
+            logger.info("Validate Password from Token [{} vs {}]", userDetails.getPassword(), password);
+            
+            if (jwtTokenUtil.validateToken(authToken, userDetails) && 
+                    userDetails.getPassword().equals(password)) {
                 UsernamePasswordAuthenticationToken authentication = 
                         new UsernamePasswordAuthenticationToken(
                                 userDetails, 
