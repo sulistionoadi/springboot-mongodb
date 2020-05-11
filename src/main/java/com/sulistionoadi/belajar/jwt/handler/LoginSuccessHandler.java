@@ -8,7 +8,6 @@ package com.sulistionoadi.belajar.jwt.handler;
 import com.sulistionoadi.belajar.jwt.security.JwtTokenUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -1,5 +1,6 @@
 package com.sulistionoadi.belajar.jwt.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -33,6 +34,9 @@ public class JwtTokenUtil implements Serializable {
     
     @Autowired
     private EncryptionUtil encryptionUtil;
+    
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public String getUsernameFromToken(String token) {
         String username;
@@ -122,10 +126,9 @@ public class JwtTokenUtil implements Serializable {
 
     public String generateToken(UserDetails userDetails) throws Exception {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
+        claims.put(CLAIM_KEY_USERNAME, encryptionUtil.encrypt(objectMapper.writeValueAsString(userDetails)));
         claims.put(CLAIM_KEY_AUDIENCE, "web");
         claims.put(CLAIM_KEY_CREATED, new Date());
-        claims.put("secret", encryptionUtil.encrypt(userDetails.getPassword()));
         return generateToken(claims);
     }
 
